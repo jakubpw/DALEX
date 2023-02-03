@@ -67,6 +67,7 @@ class ShapWrapper(Explanation):
         None
         """
         from shap import TreeExplainer, DeepExplainer, GradientExplainer, LinearExplainer, KernelExplainer
+        from ...model_explanations import Shapr
 
         checks.check_compatibility(explainer)
         shap_explainer_type = checks.check_shap_explainer_type(shap_explainer_type, explainer.model)
@@ -89,6 +90,8 @@ class ShapWrapper(Explanation):
             self.shap_explainer = KernelExplainer(
                 lambda x: explainer.predict(x), explainer.data.values
             )
+        elif shap_explainer_type == "ShaprExplainer":
+            self.shap_explainer = Shapr(lambda x: explainer.predict(x), explainer.data.values)
 
         self.result = self.shap_explainer.shap_values(new_observation.values, **kwargs)
         self.new_observation = new_observation
